@@ -1,0 +1,158 @@
+PART A-Download and configure eclipse IDE and tomcat server
+1. Download Eclipse and Tomcat zip folder of any version(try choosing latest
+version)
+2. Set runtime environment of tomcat in eclipse
+- Windows
+- Preferences
+- Server
+- Runtime environment
+- Choose the version of apache
+- Then add the path of the tomcat includes all the folders.
+3. Add the server
+PART-B
+Let&#39;s see the steps, you need to follow to create the first servlet example.
+o Create a Dynamic web project
+o create a servlet
+o add servlet-api.jar file
+o Run the servlet
+1) Create the dynamic web project:
+For creating a dynamic web project 
+click on File Menu -&gt; New -&gt; Dynamic web project -&gt; write your project name e.g.
+first -&gt; Finish.
+2) Create the servlet in eclipse IDE:
+For creating a servlet, explore the project by clicking the + icon -&gt; explore the Java
+Resources -&gt; right click on project or application -&gt; New -&gt; servlet -&gt; write your
+servlet name e.g. Hello -&gt; uncheck all the checkboxes except doGet() -&gt; next -&gt;
+Finish.
+3) add jar file in eclipse IDE:
+For adding a jar file, right click on your project -&gt; Build Path -&gt; Configure Build Path
+
+-&gt; click on Libraries tab in Java Build Path -&gt; click on Add External JARs button
+-&gt; select the servlet-api.jar file under tomcat/lib -&gt; ok.
+4) Start the server and deploy the project:
+For starting the server and deploying the project in one step, Right click on your
+project -&gt; Run As -&gt; Run on Server -&gt; choose tomcat server -&gt; next -&gt; addAll -&gt;
+finish.
+
+Program 11
+A web application that takes name and age from an HTML page. If the
+age is less than 18, it should send a page with “Hello , you are not
+authorized to visit the site” message, where should be replaced with
+the entered name. Otherwise it should send “Welcome to this site”
+message.
+AIM: To design an application to validate age are less than 18 or more
+than 18 using SERVLET.
+index.html:
+&lt;html
+&lt;head&gt;
+&lt;title&gt;VoterApp&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;form action= &quot;http://localhost:8080/CheckAge/check&quot; method=&quot;get&quot;&gt;
+&lt;fieldset style=&quot;width:20%; background-color:#80ffcc&quot;&gt;
+&lt;table&gt;
+&lt;tr&gt;&lt;td&gt;Name&lt;/td&gt;&lt;td&gt;&lt;input type=&quot;text&quot; name=&quot;name&quot;&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;Age&lt;/td&gt;&lt;td&gt;&lt;input type=&quot;text&quot; name=&quot;age&quot;&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;&lt;input type = &quot;submit&quot; value=&quot;Check Eligibility&quot;&gt;&lt;/td&gt;&lt;/tr&gt;
+
+&lt;/table&gt;
+&lt;/fieldset&gt;
+&lt;/form&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+VoterSrv.java:
+import java.io.*;
+import java.util.*;
+
+import javax.servlet.*;
+import javax.servlet.http.*;
+public class VoterSrv extends HttpServlet
+{
+public void service(HttpServletRequest req, HttpServletResponse res) throws
+IOException,ServletException
+{
+//set response content type
+res.setContentType(&quot;text/html&quot;);
+//get printWrite obj
+PrintWriter pw = res.getWriter();
+//read form data from page as request parameter
+String name = req.getParameter(&quot;name&quot;);
+int age = Integer.parseInt(req.getParameter(&quot;age&quot;)); if (age&gt;=18)
+{
+pw.println(&quot;&lt;font color=&#39;green&#39; size=&#39;4&#39;&gt;Welcome &quot;+name+&quot; to this
+site&lt;/font&gt;&quot;);
+}
+else
+pw.println(&quot;&lt;font color=&#39;red&#39; size=&#39;4&#39;&gt;Hello &quot;+name+&quot;, you are not authorized to visit the
+site&lt;/font&gt;&quot;);
+//add hyperlink to dynamic page
+pw.println(&quot;&lt;br&gt;&lt;br&gt;&lt;a href= &#39;index.html&#39;&gt;back&lt;/a&gt;&quot;);
+//close the stream
+pw.close();
+}
+}
+web.xml:
+&lt;web-app&gt;
+&lt;servlet&gt;
+&lt;servlet-name&gt;abc&lt;/servlet-name&gt;
+&lt;servlet-class&gt;VoterSrv&lt;/servlet-class&gt;
+&lt;/servlet&gt;
+&lt;servlet-mapping&gt;
+&lt;servlet-name&gt;abc&lt;/servlet-name&gt;
+&lt;url-pattern&gt;/check&lt;/url-pattern&gt;
+&lt;/servlet-mapping&gt;
+&lt;/web-app&gt;
+12. A web application that takes a name as input and on submits it shows a hello &lt;name&gt;
+page where name is taken from the request. It shows the start time at the right top corner of the
+page and provides a logout button. On clicking this button, it should show a logout page with
+
+Thank You &lt;name &gt; message with the duration of usage (hint: Use session to store name and time)
+USING JSP.
+
+Sessionjsp.html
+&lt;html&gt;
+&lt;head&gt; &lt;title&gt; SESSION LOGIN &lt;/title&gt; &lt;/head&gt;
+&lt;body&gt;
+&lt;center&gt;
+&lt;form action=&quot;http://localhost:8080/jsp/Session1.jsp&quot;
+method=&quot;get&quot;&gt; Enter Name: &lt;input type=&quot;text&quot;
+name=&quot;uname&quot;&gt; &lt;br&gt;
+&lt;input type=&quot;submit&quot; value=&quot;LOGIN&quot; name=&quot;register&quot;&gt;
+&lt;/form&gt;
+&lt;/center&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+Session1.jsp
+&lt;%@page language=&quot;java&quot; import=&quot;java.util.*&quot; errorPage=&quot;&quot;%&gt;
+&lt;form method=&quot;get&quot; action=&quot;http://localhost:8080/jsp/Session2.jsp&quot;&gt;
+&lt;%
+Date d=new Date();
+%&gt;
+&lt;p align=&quot;right&quot;&gt; Time;&lt;%=d.getTime()%&gt;&lt;/p&gt;
+&lt;%
+String
+un=request.getParameter(&quot;uname
+&quot;); session.setAttribute(&quot;user&quot;,un);
+session.setAttribute(&quot;time&quot;,d.getT
+ime());
+%&gt;
+Hello &lt;%=un%&gt;
+&lt;br&gt;&lt;br&gt;
+&lt;input type=&quot;submit&quot; value=&quot;logout&quot;&gt;
+&lt;/form&gt;
+Session2.jsp
+&lt;%@page language=&quot;java&quot; import=&quot;java.util.*&quot; errorPage=&quot;&quot;%&gt;
+&lt;%
+Date d2=new Date();
+String
+un=(String)session.getAttribute(&quot;user
+&quot;); Long
+t1=(Long)session.getAttribute(&quot;time&quot;)
+; Long t2=d2.getTime();
+
+%&gt;
+Thank you &lt;%=un%&gt;
+&lt;br&gt;&lt;br&gt;
+Session duration: &lt;%=(t2-t1)/(60*60)%&gt; seconds
+&lt;% session.invalidate();%&gt;
