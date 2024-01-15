@@ -1,52 +1,90 @@
-/*
-A web application that takes a name as input and on submits it shows a hello
-&lt;name&gt;
-page where the name is taken from the request. It shows the start time at the
-right top corner of the
-page and provides a logout button. On clicking this button, it should show a
-logout page with
-a Thank You &lt; name &gt; message with the duration of usage (hint: Use
-session to store name and time)
-USING JSP.
-*/
-Webjsp.html
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<!DOCTYPE html>
 <html>
-<head> <title> SESSION LOGIN </title> </head>
+<head>
+    <meta charset="UTF-8">
+    <title>User Registration</title>
+</head>
 <body>
-<center>
-<form action="http://localhost:8080/SecondProject/Session1.jsp"
-method="get"> Enter Name: <input type="text"
-name="uname"> <br>
-<input type="submit" value="LOGIN" name="register">
+
+<%
+    // Import Java classes
+    import java.sql.Connection;
+    import java.sql.DriverManager;
+    import java.sql.PreparedStatement;
+    import java.io.IOException;
+    import java.io.PrintWriter;
+
+    // User Bean
+    class User {
+        private String username;
+        private String password;
+
+        public String getUsername() {
+            return username;
+        }
+
+        public void setUsername(String username) {
+            this.username = username;
+        }
+
+        public String getPassword() {
+            return password;
+        }
+
+        public void setPassword(String password) {
+            this.password = password;
+        }
+    }
+
+    // Database connection details
+    String dbURL = "jdbc:mysql://localhost:3306/user_registration";
+    String dbUser = "your_username";
+    String dbPassword = "your_password";
+
+    // Function to register user
+    void registerUser(User user, HttpServletResponse response) throws IOException {
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            Connection connection = DriverManager.getConnection(dbURL, dbUser, dbPassword);
+
+            String query = "INSERT INTO users (username, password) VALUES (?, ?)";
+            try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+                preparedStatement.setString(1, user.getUsername());
+                preparedStatement.setString(2, user.getPassword());
+
+                int rowsAffected = preparedStatement.executeUpdate();
+                if (rowsAffected > 0) {
+                    response.sendRedirect("registration-success.jsp");
+                } else {
+                    response.sendRedirect("registration-failure.jsp");
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.sendRedirect("registration-failure.jsp");
+        }
+    }
+
+    // Handle form submission
+    if (request.getMethod().equalsIgnoreCase("post")) {
+        String username = request.getParameter("username");
+        String password = request.getParameter("password");
+
+        User user = new User();
+        user.setUsername(username);
+        user.setPassword(password);
+
+        registerUser(user, response);
+    }
+%>
+
+<h2>User Registration Form</h2>
+<form action="" method="post">
+    Username: <input type="text" name="username" required><br>
+    Password: <input type="password" name="password" required><br>
+    <input type="submit" value="Register">
 </form>
-</center>
+
 </body>
 </html>
-Session1.jsp
-<%@page language="java" import="java.util.*" errorPage=""%>
-<form method="get" action="http://localhost:8080/SecondProject/Session2.jsp">
-<%
-Date d=new Date();
-%>
-<p align="right"> Time;<%=d.getTime()%></p>
-<%
-String un=request.getParameter("uname");
-session.setAttribute("user",un);
-session.setAttribute("time",d.getTime());
-%>
-Hello <%=un%>
-<br><br>
-<input type="submit" value="logout">
-</form>
-Session2.jsp
-<%@page language="java" import="java.util.*" errorPage=""%>
-<%
-Date d2=new Date();
-String un=(String)session.getAttribute("user");
-Long t1=(Long)session.getAttribute("time");
-Long t2=d2.getTime();
-%>
-Thank you <%=un%>
-<br><br>
-Session duration: <%=(t2-t1)/(60*60)%> seconds
-<% session.invalidate();%>
