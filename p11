@@ -1,54 +1,41 @@
-/*
-A web application that takes name and age from an HTML page. If the
-age is less than 18, it should send a page with “Hello , you are not
-authorized to visit the site” message, where should be replaced with
-the entered name. Otherwise it should send “Welcome to this site”
-message.
-*/
-first.html
-<html>
-<head>
-<title>VoterApp</title>
-</head>
-<body>
-<form action= "http://localhost:8080/FirstProject/FirstServlet" method="get">
-<fieldset style="width:20%; background-color:#80ffcc">
-<table>
-<tr><td>Name</td><td><input type="text" name="name"></td></tr>
-<tr><td>Age</td><td><input type="text" name="age"></td></tr>
-<tr><td></td>
-<td><input type = "submit" value="Check Eligibility"></td></tr>
-</table>
-</fieldset>
-</form>
-</body>
-</html>
-FirstServlet.java
-import java.io.*;
-import java.util.*;
-import jakarta.servlet.*;
-import jakarta.servlet.http.*;
-public class FirstServlet extends HttpServlet
-{
-public void service(HttpServletRequest req, HttpServletResponse res) throws
-IOException,ServletException
-{
-//set response content type
-res.setContentType("text/html");
-//get printWrite obj
-PrintWriter pw = res.getWriter();
-//read form data from page as request parameter
-String name = req.getParameter("name");
-int age = Integer.parseInt(req.getParameter("age")); if (age>=18)
-{
-pw.println("<font color='green' size='4'>Welcome "+name+" to this site</font>");
-}
-else
-pw.println("<font color='red' size='4'>Hello "+name+", you are not authorized to visit
-the site</font>");
-//add hyperlink to dynamic page
-pw.println("<br><br><a href= 'first.html'>back</a>");
-//close the stream
-pw.close();
-}
+import java.io.IOException;
+import java.io.PrintWriter;
+
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+@WebServlet("/DisplayCookieID")
+public class DisplayCookieID extends HttpServlet {
+
+    private static final long serialVersionUID = 1L;
+
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws IOException {
+        response.setContentType("text/html");
+        PrintWriter out = response.getWriter();
+
+        // Retrieve the cookies from the request
+        Cookie[] cookies = request.getCookies();
+
+        out.println("<html>");
+        out.println("<head><title>Cookie ID Display</title></head>");
+        out.println("<body>");
+
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if (cookie.getName().equals("cookieID")) {
+                    out.println("<h2>Cookie ID: " + cookie.getValue() + "</h2>");
+                    break;
+                }
+            }
+        } else {
+            out.println("<h2>No cookies found</h2>");
+        }
+
+        out.println("</body>");
+        out.println("</html>");
+    }
 }
