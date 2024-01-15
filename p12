@@ -1,0 +1,52 @@
+/*
+A web application that takes a name as input and on submits it shows a hello
+&lt;name&gt;
+page where the name is taken from the request. It shows the start time at the
+right top corner of the
+page and provides a logout button. On clicking this button, it should show a
+logout page with
+a Thank You &lt; name &gt; message with the duration of usage (hint: Use
+session to store name and time)
+USING JSP.
+*/
+Webjsp.html
+<html>
+<head> <title> SESSION LOGIN </title> </head>
+<body>
+<center>
+<form action="http://localhost:8080/SecondProject/Session1.jsp"
+method="get"> Enter Name: <input type="text"
+name="uname"> <br>
+<input type="submit" value="LOGIN" name="register">
+</form>
+</center>
+</body>
+</html>
+Session1.jsp
+<%@page language="java" import="java.util.*" errorPage=""%>
+<form method="get" action="http://localhost:8080/SecondProject/Session2.jsp">
+<%
+Date d=new Date();
+%>
+<p align="right"> Time;<%=d.getTime()%></p>
+<%
+String un=request.getParameter("uname");
+session.setAttribute("user",un);
+session.setAttribute("time",d.getTime());
+%>
+Hello <%=un%>
+<br><br>
+<input type="submit" value="logout">
+</form>
+Session2.jsp
+<%@page language="java" import="java.util.*" errorPage=""%>
+<%
+Date d2=new Date();
+String un=(String)session.getAttribute("user");
+Long t1=(Long)session.getAttribute("time");
+Long t2=d2.getTime();
+%>
+Thank you <%=un%>
+<br><br>
+Session duration: <%=(t2-t1)/(60*60)%> seconds
+<% session.invalidate();%>
